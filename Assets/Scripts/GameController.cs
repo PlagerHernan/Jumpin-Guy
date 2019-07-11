@@ -11,6 +11,7 @@ public class GameController : MonoBehaviour {
 	public RawImage platform;
 	public GameObject uiIdle;
 	public GameObject player;
+	public GameObject enemyGenerator;
 
 	public enum EstadoDelJuego {Parado, Jugando};
 	public EstadoDelJuego estadoDelJuego = EstadoDelJuego.Parado;
@@ -28,7 +29,8 @@ public class GameController : MonoBehaviour {
 			estadoDelJuego = EstadoDelJuego.Jugando;
 			uiIdle.SetActive (false); //desactivo titulo e info
 			player.GetComponent<PlayerController>().isActive = true; //activo al jugador. isActive: variable creada en PlayerController
-			player.SendMessage ("PlayerState", "PlayerRun"); //envio mensaje a player
+			player.SendMessage ("PlayerState", "PlayerRun"); //envio mensaje a player para q empiece a correr
+			enemyGenerator.SendMessage ("GeneratorOn"); //envio mensaje a enemyGenerator para q empiece a generar
 		}
 
 		//juego en marcha
