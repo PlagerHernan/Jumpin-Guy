@@ -4,6 +4,7 @@ using System.Collections;
 
 public class GameController : MonoBehaviour {
 
+	//variables publicas que asigno desde el editor
 	[Range (0.02f, 0.3f)]
 	public float parallaxSpeed = 0.02f;
 	public RawImage background;
@@ -26,6 +27,7 @@ public class GameController : MonoBehaviour {
 		if (estadoDelJuego == EstadoDelJuego.Parado && Input.GetKey (KeyCode.Space)) {
 			estadoDelJuego = EstadoDelJuego.Jugando;
 			uiIdle.SetActive (false); //desactivo titulo e info
+			player.GetComponent<PlayerController>().isActive = true; //activo al jugador. isActive: variable creada en PlayerController
 			player.SendMessage ("PlayerState", "PlayerRun"); //envio mensaje a player
 		}
 
