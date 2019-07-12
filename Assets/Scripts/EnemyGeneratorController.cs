@@ -28,6 +28,8 @@ public class EnemyGeneratorController : MonoBehaviour {
 	public void GeneratorOff ()
 	{
 		CancelInvoke ("CreateEnemy");
+
+		//limpiar pantalla (eliminar los enemies que esten)
 		GameObject[] enemies  = GameObject.FindGameObjectsWithTag ("Enemy");
 		foreach (GameObject enemy in enemies) {
 			GameObject.Destroy (enemy);

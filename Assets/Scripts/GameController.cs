@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI; //para acceder a objetos de interfaz 
 using System.Collections;
+using System.Collections.Generic;
 
 public class GameController : MonoBehaviour {
 
@@ -22,13 +23,16 @@ public class GameController : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update () 
+	{
+
+		bool userAction = Input.GetKey (KeyCode.Space) || Input.GetMouseButton (0);
 
 		//empieza el juego 
-		if (estadoDelJuego == EstadoDelJuego.Parado && Input.GetKey (KeyCode.Space)) {
+		if (estadoDelJuego == EstadoDelJuego.Parado && userAction) {
 			estadoDelJuego = EstadoDelJuego.Jugando;
 			uiIdle.SetActive (false); //desactivo titulo e info
-			player.GetComponent<PlayerController>().isActive = true; //activo al jugador. isActive: variable creada en PlayerController
+			player.GetComponent<PlayerController> ().isActive = true; //activo al jugador. isActive: variable creada en PlayerController
 			player.SendMessage ("PlayerState", "PlayerRun"); //envio mensaje a player para q empiece a correr
 			enemyGenerator.SendMessage ("GeneratorOn"); //envio mensaje a enemyGenerator para q empiece a generar
 		}
@@ -37,14 +41,23 @@ public class GameController : MonoBehaviour {
 		else if (estadoDelJuego == EstadoDelJuego.Jugando) {
 			Parallax ();
 
-			//si player ha muerto
-			if (player.GetComponent<PlayerController>().isActive == false) {
+			//si player no esta activo
+			if (player.GetComponent<PlayerController> ().isActive == false) {
 				estadoDelJuego = EstadoDelJuego.Finalizado;
 			}
 		}
 
-		else if (estadoDelJuego == EstadoDelJuego.Finalizado) {
+		//juego finalizado
+		else if (estadoDelJuego == EstadoDelJuego.Finalizado) 
+		{
 			enemyGenerator.SendMessage ("GeneratorOff");
+
+			//si player ha muerto 
+			//isDead: variable creada en PlayerController, modificada en evento de PlayerDie.anim
+			if (player.GetComponent<PlayerController> ().isDead && userAction) 
+			{
+				RestartGame ();
+			}
 		}
 	}
 
@@ -53,5 +66,11 @@ public class GameController : MonoBehaviour {
 		float finalSpeed = parallaxSpeed * Time.deltaTime; 
 		background.uvRect = new Rect (background.uvRect.x + finalSpeed, 0f, 1f, 1f); //Se mueve en x. El resto queda igual
 		platform.uvRect = new Rect (platform.uvRect.x + finalSpeed*4, 0f, 1f, 1f); //Se mueve 4 veces mas rapido que el background
+	}
+
+	void RestartGame()
+	{
+		//desde unity 5.3 en adelante:  reemplazar por SceneManager.LoadScene()
+		Application.LoadLevel ("MainScene");
 	}
 }
