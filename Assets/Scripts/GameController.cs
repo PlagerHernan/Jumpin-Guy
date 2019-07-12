@@ -13,7 +13,7 @@ public class GameController : MonoBehaviour {
 	public GameObject player;
 	public GameObject enemyGenerator;
 
-	public enum EstadoDelJuego {Parado, Jugando};
+	public enum EstadoDelJuego {Parado, Jugando, Finalizado};
 	public EstadoDelJuego estadoDelJuego = EstadoDelJuego.Parado;
 
 	// Use this for initialization
@@ -36,6 +36,15 @@ public class GameController : MonoBehaviour {
 		//juego en marcha
 		else if (estadoDelJuego == EstadoDelJuego.Jugando) {
 			Parallax ();
+
+			//si player ha muerto
+			if (player.GetComponent<PlayerController>().isActive == false) {
+				estadoDelJuego = EstadoDelJuego.Finalizado;
+			}
+		}
+
+		else if (estadoDelJuego == EstadoDelJuego.Finalizado) {
+			enemyGenerator.SendMessage ("GeneratorOff");
 		}
 	}
 

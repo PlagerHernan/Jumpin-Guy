@@ -23,7 +23,14 @@ public class PlayerController : MonoBehaviour {
 		if (state != null) {
 			_animator.Play(state);
 		}
-
-
 	} 
+
+	void OnTriggerEnter2D(Collider2D other)
+	{
+		if (other.gameObject.tag == "Enemy") {
+			//Debug.Log ("me muerooooo");
+			PlayerState ("PlayerDie");
+			isActive = false;
+		}
+	}
 }
