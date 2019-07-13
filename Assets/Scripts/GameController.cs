@@ -14,6 +14,8 @@ public class GameController : MonoBehaviour {
 	public GameObject player;
 	public GameObject enemyGenerator;
 
+	private AudioSource gameMusic;
+
 	public enum EstadoDelJuego {Parado, Jugando, Finalizado};
 	public EstadoDelJuego estadoDelJuego = EstadoDelJuego.Parado;
 
@@ -35,6 +37,8 @@ public class GameController : MonoBehaviour {
 			player.GetComponent<PlayerController> ().isActive = true; //activo al jugador. isActive: variable creada en PlayerController
 			player.SendMessage ("PlayerState", "PlayerRun"); //envio mensaje a player para q empiece a correr
 			enemyGenerator.SendMessage ("GeneratorOn"); //envio mensaje a enemyGenerator para q empiece a generar
+			gameMusic = gameObject.GetComponent<AudioSource>();
+			gameMusic.Play ();
 		}
 
 		//juego en marcha
@@ -44,6 +48,7 @@ public class GameController : MonoBehaviour {
 			//si player no esta activo
 			if (player.GetComponent<PlayerController> ().isActive == false) {
 				estadoDelJuego = EstadoDelJuego.Finalizado;
+				gameMusic.Stop();
 			}
 		}
 
