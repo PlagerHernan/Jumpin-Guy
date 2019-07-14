@@ -34,6 +34,7 @@ public class GameController : MonoBehaviour {
 			estadoDelJuego = EstadoDelJuego.Jugando;
 			uiIdle.SetActive (false); //desactivo titulo e info
 			player.SendMessage ("PlayerState", "PlayerRun"); //envio mensaje a player para q empiece a correr
+			player.GetComponentInChildren<ParticleSystem>().Play (); //activo el polvo al correr
 			player.GetComponent<PlayerController> ().isActive = true; //activo al jugador. isActive: variable creada en PlayerController
 			enemyGenerator.SendMessage ("GeneratorOn"); //envio mensaje a enemyGenerator para q empiece a generar
 

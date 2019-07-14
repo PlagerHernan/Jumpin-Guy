@@ -30,13 +30,13 @@ public class PlayerController : MonoBehaviour {
 		if (isActive && userAction) {
 
 			PlayerState("PlayerJump");
+
 			audioSource.clip = jumpAudio;
-			//si el jugador se encuentra en el suelo
+			//si el jugador se encuentra en el suelo, reproduzco el sonido de salto
 			if (positionY == -3.5f) 
 			{
 				audioSource.Play ();
 			}
-
 		}
 	}
 
@@ -56,6 +56,8 @@ public class PlayerController : MonoBehaviour {
 			isActive = false;
 			Time.timeScale = 0.2f;
 			PlayerState ("PlayerDie");
+			StopDust();
+
 			audioSource.clip = dieAudio;
 			audioSource.Play ();
 		}
@@ -66,5 +68,15 @@ public class PlayerController : MonoBehaviour {
 	{
 		//Debug.Log ("estoy muerto");
 		isDead = true;
+	}
+
+	void PlayDust()
+	{
+		GetComponentInChildren<ParticleSystem> ().Play ();
+	}
+
+	void StopDust()
+	{
+		GetComponentInChildren<ParticleSystem> ().Stop ();
 	}
 }
