@@ -17,7 +17,10 @@ public class GameController : MonoBehaviour {
 	public RawImage background;
 	public RawImage platform;
 
-	private AudioSource gameMusic;
+	private AudioSource[] audios;
+	private AudioSource backgroundMusic;
+	private AudioSource recordAudio;
+	public AudioClip gameMusic;
 
 	private enum EstadoDelJuego {Parado, Jugando, Finalizado};
 	private EstadoDelJuego estadoDelJuego = EstadoDelJuego.Parado;
@@ -30,7 +33,10 @@ public class GameController : MonoBehaviour {
 		//PlayerPrefs.DeleteKey ("Record"); //borrar record
 
 		recordText.text = "Record: " + GetRecord().ToString (); 
-		gameMusic = GetComponent<AudioSource>(); 
+
+		audios = GetComponents<AudioSource> ();
+		backgroundMusic = audios [0];
+		recordAudio = audios [1];
 	}
 	
 	// Update is called once per frame
@@ -51,7 +57,8 @@ public class GameController : MonoBehaviour {
 			player.GetComponent<PlayerController> ().isActive = true; //activo al jugador. isActive: variable creada en PlayerController
 			enemyGenerator.SendMessage ("GeneratorOn"); //envio mensaje a enemyGenerator para q empiece a generar
 
-			gameMusic.Play ();
+			backgroundMusic.clip = gameMusic; 
+			backgroundMusic.Play ();
 		}
 
 		//juego en marcha
@@ -61,7 +68,7 @@ public class GameController : MonoBehaviour {
 			//si player no esta activo (muriendo)
 			if (player.GetComponent<PlayerController> ().isActive == false) {
 				estadoDelJuego = EstadoDelJuego.Finalizado;
-				gameMusic.Stop();
+				backgroundMusic.Stop();
 				CancelInvoke ("AccelerateTime");
 				Time.timeScale = 1f;
 				enemyGenerator.SendMessage ("GeneratorOff");
@@ -107,6 +114,7 @@ public class GameController : MonoBehaviour {
 			{
 				Debug.Log ("nuevo record");
 				recordText.GetComponent<Animator>().Play ("RecordBlink");
+				recordAudio.Play ();
 			}
 
 			recordText.text = "Record: " + pointsCount.ToString ();
