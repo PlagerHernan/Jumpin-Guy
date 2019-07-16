@@ -3,6 +3,8 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour {
 
+	public GameObject game;
+
 	public bool isActive = false; 
 	public bool isDead = false;
 
@@ -11,6 +13,7 @@ public class PlayerController : MonoBehaviour {
 	private AudioSource audioSource;
 	public AudioClip dieAudio;
 	public AudioClip jumpAudio;
+	public AudioClip pointAudio;
 
 	// Use this for initialization
 	void Start () {
@@ -47,8 +50,7 @@ public class PlayerController : MonoBehaviour {
 			_animator.Play(state);
 		}
 	} 
-
-	//muerte
+	
 	void OnTriggerEnter2D(Collider2D other)
 	{
 		if (other.gameObject.tag == "Enemy") {
@@ -59,6 +61,13 @@ public class PlayerController : MonoBehaviour {
 			StopDust();
 
 			audioSource.clip = dieAudio;
+			audioSource.Play ();
+		}
+
+		else if (other.gameObject.tag == "Point") 
+		{
+			game.SendMessage ("IncreasePoints");
+			audioSource.clip = pointAudio;
 			audioSource.Play ();
 		}
 	}

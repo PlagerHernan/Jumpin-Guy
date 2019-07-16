@@ -5,23 +5,32 @@ using System.Collections.Generic;
 
 public class GameController : MonoBehaviour {
 
-	//variables publicas que asigno desde el editor
+	public GameObject uiIdle;
+	public GameObject uiScore;
+	public Text pointsText;
+	public Text recordText;
+	public GameObject player;
+	public GameObject enemyGenerator;
+
 	[Range (0.02f, 0.3f)]
 	public float parallaxSpeed = 0.02f;
 	public RawImage background;
 	public RawImage platform;
-	public GameObject uiIdle;
-	public GameObject player;
-	public GameObject enemyGenerator;
 
 	private AudioSource gameMusic;
 
 	private enum EstadoDelJuego {Parado, Jugando, Finalizado};
 	private EstadoDelJuego estadoDelJuego = EstadoDelJuego.Parado;
 
-	// Use this for initialization
-	void Start () {
+	private int pointsCount = 0;
 
+	// Use this for initialization
+	void Start () 
+	{
+		//PlayerPrefs.DeleteKey ("Record"); //borrar record
+
+		recordText.text = "Record: " + GetRecord().ToString (); 
+		gameMusic = GetComponent<AudioSource>(); 
 	}
 	
 	// Update is called once per frame
@@ -30,18 +39,19 @@ public class GameController : MonoBehaviour {
 		bool userAction = Input.GetKey (KeyCode.Return);
 
 		//empieza el juego 
-		if (estadoDelJuego == EstadoDelJuego.Parado && userAction) {
+		if (estadoDelJuego == EstadoDelJuego.Parado && userAction) 
+		{
 			estadoDelJuego = EstadoDelJuego.Jugando;
 			uiIdle.SetActive (false); //desactivo titulo e info
+			uiScore.SetActive (true); //activo puntaje
+			InvokeRepeating ("AccelerateTime", 6f, 6f); //acelero tiempo de juego, desde los 6'', cada 6''
+
 			player.SendMessage ("PlayerState", "PlayerRun"); //envio mensaje a player para q empiece a correr
 			player.GetComponentInChildren<ParticleSystem>().Play (); //activo el polvo al correr
 			player.GetComponent<PlayerController> ().isActive = true; //activo al jugador. isActive: variable creada en PlayerController
 			enemyGenerator.SendMessage ("GeneratorOn"); //envio mensaje a enemyGenerator para q empiece a generar
 
-			gameMusic = gameObject.GetComponent<AudioSource>();
 			gameMusic.Play ();
-
-			InvokeRepeating ("AccelerateTime", 6f, 6f); //acelero tiempo de juego, desde los 6'', cada 6''
 		}
 
 		//juego en marcha
@@ -55,6 +65,9 @@ public class GameController : MonoBehaviour {
 				CancelInvoke ("AccelerateTime");
 				Time.timeScale = 1f;
 				enemyGenerator.SendMessage ("GeneratorOff");
+				if (pointsCount >= GetRecord ()) {
+					SetRecord(pointsCount);
+				}
 			}
 		}
 
@@ -63,7 +76,7 @@ public class GameController : MonoBehaviour {
 		{
 			//si player ha muerto 
 			//isDead: variable creada en PlayerController, modificada en evento de PlayerDie.anim
-			if (player.GetComponent<PlayerController> ().isDead && userAction) 
+			if (player.GetComponent<PlayerController> ().isDead) 
 			{
 				RestartGame ();
 			}
@@ -82,9 +95,38 @@ public class GameController : MonoBehaviour {
 		Debug.Log (Time.timeScale);
 	} 
 
+	void IncreasePoints() //llamado desde PlayerController, OnTriggerEnter2D() 
+	{
+		pointsCount ++;
+		//Debug.Log ("puntos: " + pointsCount);
+		pointsText.text = pointsCount.ToString ();
+
+		if (pointsCount > GetRecord ())
+		{ 
+			if (pointsCount == GetRecord () + 1 ) 
+			{
+				Debug.Log ("nuevo record");
+				recordText.GetComponent<Animator>().Play ("RecordBlink");
+			}
+
+			recordText.text = "Record: " + pointsCount.ToString ();
+		}
+	}
+
 	void RestartGame()
 	{
 		//desde unity 5.3 en adelante:  reemplazar por SceneManager.LoadScene()
 		Application.LoadLevel ("MainScene");
 	}
+
+	int GetRecord()
+	{
+		return PlayerPrefs.GetInt ("Record", 0);
+	}
+
+	void SetRecord(int currentPoints)
+	{
+		PlayerPrefs.SetInt ("Record", currentPoints);
+	}
+	
 }
