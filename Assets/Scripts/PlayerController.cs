@@ -55,6 +55,7 @@ public class PlayerController : MonoBehaviour {
 	{
 		if (other.gameObject.tag == "Enemy") {
 			//Debug.Log ("me muerooooo");
+			other.GetComponentInChildren<BoxCollider2D>().enabled = false; //desactivo collider de point, para q no pueda sumar punto al morir
 			isActive = false;
 			Time.timeScale = 0.2f;
 			PlayerState ("PlayerDie");
@@ -67,6 +68,8 @@ public class PlayerController : MonoBehaviour {
 		else if (other.gameObject.tag == "Point") 
 		{
 			game.SendMessage ("IncreasePoints");
+			GameObject.Destroy (other.gameObject); //destruyo el point para q no se pueda sumar puntos pasando dos veces
+
 			audioSource.clip = pointAudio;
 			audioSource.Play ();
 		}
