@@ -4,6 +4,7 @@ using System.Collections;
 public class PlayerController : MonoBehaviour {
 
 	public GameObject game;
+	public InteractiveElement buttonJump;
 
 	public bool isActive = false; 
 	public bool isDead = false;
@@ -26,7 +27,7 @@ public class PlayerController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		bool userAction = Input.GetKey (KeyCode.Space) || Input.GetMouseButton(0);
+		bool userAction = Input.GetKey (KeyCode.Space) || buttonJump.click; //|| Input.GetMouseButton(0) 
 		float positionY = GetComponent<Transform>().position.y; 
 
 		//salto
@@ -49,7 +50,7 @@ public class PlayerController : MonoBehaviour {
 		if (state != null) {
 			_animator.Play(state);
 		}
-	} 
+	} 	
 	
 	void OnTriggerEnter2D(Collider2D other)
 	{

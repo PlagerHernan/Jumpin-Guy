@@ -7,10 +7,12 @@ public class GameController : MonoBehaviour {
 
 	public GameObject uiIdle;
 	public GameObject uiScore;
+	public GameObject buttonJump;
 	public Text pointsText;
 	public Text recordText;
 	public GameObject player;
 	public GameObject enemyGenerator;
+	public InteractiveElement interactiveScreen;
 
 	[Range (0.02f, 0.3f)]
 	public float parallaxSpeed = 0.02f;
@@ -42,14 +44,16 @@ public class GameController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-		bool userAction = Input.GetKey (KeyCode.Return);
+		bool userAction =  Input.GetKey (KeyCode.Return); //KeyCode.Return: Enter
 
 		//empieza el juego 
-		if (estadoDelJuego == EstadoDelJuego.Parado && userAction) 
+		if (estadoDelJuego == EstadoDelJuego.Parado && (userAction || interactiveScreen.click)) 
 		{
 			estadoDelJuego = EstadoDelJuego.Jugando;
 			uiIdle.SetActive (false); //desactivo titulo e info
+
 			uiScore.SetActive (true); //activo puntaje
+			buttonJump.SetActive(true); //activo botón virtual de salto
 			InvokeRepeating ("AccelerateTime", 6f, 6f); //acelero tiempo de juego, desde los 6'', cada 6''
 
 			player.SendMessage ("PlayerState", "PlayerRun"); //envio mensaje a player para q empiece a correr
@@ -75,6 +79,7 @@ public class GameController : MonoBehaviour {
 				if (pointsCount >= GetRecord ()) {
 					SetRecord(pointsCount);
 				}
+				buttonJump.SetActive(false); //desactivo botón virtual de salto
 			}
 		}
 
