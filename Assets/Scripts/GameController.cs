@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using UnityEngine.UI; //para acceder a objetos de interfaz 
+using UnityEngine.UI; 
 using System.Collections;
 using System.Collections.Generic;
 

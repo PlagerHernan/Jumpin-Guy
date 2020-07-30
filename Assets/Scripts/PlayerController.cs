@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerController : MonoBehaviour {
-
+public class PlayerController : MonoBehaviour 
+{
 	public GameObject game;
 	public InteractiveElement buttonJump;
 
@@ -17,7 +17,8 @@ public class PlayerController : MonoBehaviour {
 	public AudioClip pointAudio;
 
 	// Use this for initialization
-	void Start () {
+	void Start () 
+	{
 		_animator = GetComponent<Animator>();
 		audioSource = GetComponent<AudioSource>();
 
